@@ -11,11 +11,18 @@ a
 	text-decoration: none;
 }
 
-#menu
+#sidebar
 {
 	float: right;
-	height: 400px;
-	width: 200px;
+	height: 600px;
+	width: 150px;
+}
+
+.actions
+{
+	float: right;
+	height: 200px;
+	width: 150px;
 }
 
 table 

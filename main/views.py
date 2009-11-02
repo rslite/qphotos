@@ -5,8 +5,9 @@ from django.db.models import Count
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render_to_response
 from django.template import Context, loader
-from qphotos.main.models import Media, Location, Tag, MediaTag
+from qphotos.main.models import Media, Location, Tag
 from qphotos.main.qimport import import_location
+from qphotos.main.utils import tag_media
 import Image, os
 
 def index(req):
@@ -50,6 +51,10 @@ def browse(req):
 		page = paginator.page(1)
 		pagenr = 1
 	data = [page.object_list[i*COLS:i*COLS+COLS] for i in xrange(ROWS)]
+
+	# Get tags
+	alltags = Tag.objects.all()
+
 	return render_to_response('main/browse.htm', locals())
 
 def command(req):
@@ -71,6 +76,10 @@ def command(req):
 	if cmd == 'del':
 		qs = Media.objects.filter(pk__in = sel)
 		qs.delete()
+	elif cmd == 'tag':
+		tags = req.POST['tags']
+		if tags:
+			tag_media(sel, tags.split(' '))
 	else:
 		return HttpRequestNotFound()
 

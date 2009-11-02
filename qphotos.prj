@@ -18,6 +18,8 @@ QPhotos=E:\django\qphotos filter="*.py *.css *.htm *.js" {
  }
  static=static {
   styles.css
+  jquery.js
+  main.js
  }
  views=views {
   base.htm

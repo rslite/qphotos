@@ -44,19 +44,11 @@ class Media(models.Model):
 
 	# Location from which the file was read
 	location = models.ForeignKey(Location)
+	# Assigned tags
+	tags = models.ManyToManyField(Tag)
 
 	def __unicode__(self):
 		return '%s (%s)' % (self.name, strftime('%Y.%m.%d', self.date))
 
 	class Meta:
 		ordering = ['date', 'name']
-
-class MediaTag(models.Model):
-	""" Link between media and tags """
-	# Media link
-	media = models.ForeignKey(Media)
-	# Tag link
-	tag = models.ForeignKey(Tag)
-
-	def __unicode__(self):
-		return '%s - %s' % (self.media, self.tag)

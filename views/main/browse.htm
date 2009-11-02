@@ -2,6 +2,14 @@
 
 {% block content %}
 <h1>Browse images</h1>
+<form id="cmdform" action="/command" method="POST">
+<script type="text/javascript">
+function pcmd(cmd){
+	$('input[name=cmd]').val(cmd);
+	$('#cmdform').submit();
+	return false;
+}
+</script>
 <div>
 	Total photos: {{total_count}}. 
 	Page {{pagenr}} of {{paginator.num_pages}}.
@@ -12,51 +20,61 @@
 		<a href="?p={{pagenr|add:1}}">Next</a>
 	{% endif %}
 </div>
-<div id="actions" class="actions" style="display:none">
-	<a id='del' href='#' onclick="return cmd('del')">Delete</a>
-</div>
 <table>
 	{% for plist in data %}
 	<tr>
 		{% for photo in plist %}
-		<td>
+		<td align="center">
 			<div id="dv_{{photo.id}}" class="thumb">
-				<div class="name"><a href="/slide?id={{photo.id}}">{{photo.name|safe}}</a></div>
+				<div class="name"><a href="/slide?id={{photo.id}}" target="_blank">{{photo.name|safe}}</a></div>
 				<img src='data/{{ photo.year }}/{{ photo.month|stringformat:"02d" }}/{{ photo.day|stringformat:"02d" }}/{{ photo.name }}' />
 			</div>
 			<div class="info">{{photo.info|safe}}</div>
+			<div class="tags">
+				{% for tag in photo.tags.all %}
+					{{tag.name}}{% if not forloop.last %},{% endif %}
+				{% empty %}
+					No tags
+				{% endfor %}
+			</div>
 		</td>
 		{% endfor %}
 	</tr>
 	{% endfor %}
 </table>
-<form id="cmdform" action="/command" method="POST">
 	<input type="hidden" name="cmd" value="" />
 	<input type="hidden" name="sel" value="" />
 </form>
 <script type="text/javascript">
-$("div.thumb").click(function(){
+$("div.thumb img").click(function(){
 	var img = $(this);
 	var id = img.attr('id');
 	var sel = $('input[name=sel]');
 	if (img.hasClass('selected')) {
-		img.removeClass('selected');
+		img.parent().removeClass('selected');
 		sel.val(sel.val().replace(',' + id, ''));
 	} else {
-		img.addClass('selected');
+		img.parent().addClass('selected');
 		sel.val(sel.val() + ',' + id);
 	}
-	//alert(sel.val());
 	var act = $('#actions');
 	if (sel.val().length > 0)
 		act.show();
 	else
 		act.hide();
 });
-function cmd(cmd){
-	$('input[name=cmd]').val(cmd);
-	$('#cmdform').submit();
-}
 </script>
 {% endblock %}
 
+{% block sidebar %}
+<div id="actions" class="actions" style="display:none">
+	<div><a id='del' href='#' onclick="return pcmd('del');">Delete</a></div>
+	<div><input type='text' name='tags' /><a id='tag' href='#' onclick="return pcmd('tag');">Tag</a></div>
+</div>
+<div class="tags">
+	<h3>Tags</h3>
+	{% for tag in alltags %}
+	<a href="/filter?tags">{{tag.name}}</a><br/>
+	{% endfor %}
+</div>
+{% endblock %}
