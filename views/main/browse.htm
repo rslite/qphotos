@@ -1,0 +1,26 @@
+{% extends "base.htm" %}
+
+{% block content %}
+<h1>Browse images</h1>
+<div>Total photos: {{total_count}}. Page {{pagenr}} of {{paginator.num_pages}}.</div>
+{% if page.has_previous %}
+	<a href="?p={{pagenr|add:-1}}">Prev</a>
+{% endif %}
+{% if page.has_next %}
+	<a href="?p={{pagenr|add:1}}">Next</a>
+{% endif %}
+<table>
+	{% for plist in data %}
+	<tr>
+		{% for photo in plist %}
+		<td>
+			<div class="name">{{photo.name|safe}}</div>
+			<a href="/slide?id={{photo.id}}"><img src='data/{{ photo.year }}/{{ photo.month|stringformat:"02d" }}/{{ photo.day|stringformat:"02d" }}/{{ photo.name }}' /></a>
+			<div class="info">{{photo.info|safe}}</div>
+		</td>
+		{% endfor %}
+	</tr>
+	{% endfor %}
+</table>
+{% endblock %}
+

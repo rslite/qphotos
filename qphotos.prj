@@ -1,0 +1,31 @@
+
+QPhotos=E:\django\qphotos filter="*.py *.css *.htm" {
+ __init__.py
+ manage.py
+ settings.py
+ urls.py
+ data=data {
+ }
+ db=db {
+ }
+ main=main {
+  EXIF.py
+  __init__.py
+  models.py
+  qimport.py
+  tests.py
+  views.py
+ }
+ static=static {
+  styles.css
+ }
+ views=views {
+  base.htm
+  main=main {
+   browse.htm
+   index.htm
+   qimport.htm
+   slide.htm
+  }
+ }
+}

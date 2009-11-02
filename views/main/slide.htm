@@ -1,0 +1,6 @@
+{% extends "base.htm" %}
+
+{% block content %}
+<div>{{photo.info|safe}}</div>
+<img src="/getfile?id={{photo.id}}&s=M" class="slide"/>
+{% endblock %}

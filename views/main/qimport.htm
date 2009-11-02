@@ -1,0 +1,8 @@
+{% extends "base.htm" %}
+
+{% block content %}
+<form action="import" method="POST">
+	Import location: <input type="text" name="location" maxlength="400"/>
+	<input type="submit" name="add" value="Add" />
+</form>
+{% endblock %}

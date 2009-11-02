@@ -1,0 +1,25 @@
+<html>
+	<head>
+		<title>{% block title %}Photos{% endblock %}</title>
+		<link rel="stylesheet" href="/static/styles.css" />
+	</head>
+	<body>
+		<div id="menu">
+			<a href="/browse">Browse media</a><br/>
+			<br/>
+			<br/>
+			<a href="/import">Import new stuff</a><br/>
+			<br/>
+			<br/>
+			<br/>
+			<br/>
+			<br/>
+			<a href="/admin/">Administration</a><br/>
+			<br/>
+			<a href="/deleteall">Delete all images</a><br/>
+			{% block menu %}
+			{% endblock %}
+		</div>
+		{% block content %}{% endblock %}
+	</body>
+</html>
