@@ -1,5 +1,5 @@
 
-QPhotos=E:\django\qphotos filter="*.py *.css *.htm" {
+QPhotos=E:\django\qphotos filter="*.py *.css *.htm *.js" {
  __init__.py
  manage.py
  settings.py

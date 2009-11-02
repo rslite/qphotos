@@ -36,3 +36,7 @@ th, td
 {
 	font-size: 0.5em;
 }
+.selected
+{
+	border: solid 2px #00BBFF;
+}

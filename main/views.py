@@ -41,7 +41,7 @@ def browse(req):
 	# Paginate here and get the correct objects
 	# TODO Get these from settings
 	COLS = 4
-	ROWS = 10
+	ROWS = 3
 	# TODO Implement filtering here
 	paginator = Paginator(Media.objects.all(), COLS*ROWS)
 	try:
@@ -52,6 +52,31 @@ def browse(req):
 	data = [page.object_list[i*COLS:i*COLS+COLS] for i in xrange(ROWS)]
 	return render_to_response('main/browse.htm', locals())
 
+def command(req):
+	"""
+	Execute commands passed from the server
+	"""
+
+	def getids(list):
+		"""
+		The ids are in the form ',dv_NNN,dv_NNN'
+		This function returns a list of integer ids from that.
+		"""
+		list = list.lstrip(',').split(',')
+		list = map(lambda x: int(x[3:]), list)
+		return list
+
+	cmd = req.POST['cmd']
+	sel = getids(req.POST['sel'])
+	if cmd == 'del':
+		qs = Media.objects.filter(pk__in = sel)
+		qs.delete()
+	else:
+		return HttpRequestNotFound()
+
+	# Redirect to the browsing page (for now)
+	return HttpResponseRedirect('/browse')
+
 def slide(req):
 	try:
 		photo = Media.objects.filter(id=req.GET['id']).get()
@@ -61,6 +86,13 @@ def slide(req):
 	return render_to_response('main/slide.htm', locals())
 
 def getfile(req):
+	"""
+	Serve an image as an origingal or resized
+	id - the id of the Media object
+	s (optional) - the size of the object (S, M, L).
+		If missing the original size is returned
+	"""
+
 	try:
 		fobj = Media.objects.filter(id=req.GET['id']).get()
 	except:
@@ -82,6 +114,10 @@ def getfile(req):
 	return response
 
 def deleteall(req):
+	"""
+	Delete all media objects from the database and all thumbnails
+	"""
+
 	Media.objects.all().delete()
 	import shutil
 	shutil.rmtree(settings.DATA_DIR)

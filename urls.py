@@ -14,6 +14,7 @@ urlpatterns = patterns('',
 	(r'^import$', views.qimport),
 	(r'^getfile$', views.getfile),
 	(r'^deleteall$', views.deleteall),
+	(r'^command$', views.command),
 
 	(r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': 'static'}),
 	(r'^data/(?P<path>.*)$', 'django.views.static.serve', {'document_root': 'data'}),
