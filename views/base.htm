@@ -6,6 +6,7 @@
 		<script type="text/javascript" src="/static/main.js"></script>
 	</head>
 	<body>
+		<form id="form" action="{{form_action}}" method="POST">
 		<div id="sidebar">
 			<a href="/browse">Browse media</a><br/>
 			<br/>
@@ -18,10 +19,11 @@
 			<br/>
 			<a href="/admin/">Administration</a><br/>
 			<br/>
-			<a href="/deleteall">Delete all images</a><br/>
+			<a href="/deleteall" style="display:none">Delete all images</a><br/>
 			{% block sidebar %}
 			{% endblock %}
 		</div>
 		{% block content %}{% endblock %}
+		</form>
 	</body>
 </html>

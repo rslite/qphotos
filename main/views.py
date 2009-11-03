@@ -55,6 +55,9 @@ def browse(req):
 	# Get tags
 	alltags = Tag.objects.all()
 
+	# The form will be redirected to command
+	form_action = "/command"
+
 	return render_to_response('main/browse.htm', locals())
 
 def command(req):

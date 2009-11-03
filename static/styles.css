@@ -24,6 +24,20 @@ a
 	height: 200px;
 	width: 150px;
 }
+.actions a
+{
+	background-color: lightgray;
+	border: solid 1px gray;
+	display: inline-block;
+	margin: 2px 0px;
+	text-align: center;
+	width: 60px;
+}
+
+.tags span
+{
+	color: #44BB88;
+}
 
 table 
 {

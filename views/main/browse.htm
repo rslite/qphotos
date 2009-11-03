@@ -2,11 +2,10 @@
 
 {% block content %}
 <h1>Browse images</h1>
-<form id="cmdform" action="/command" method="POST">
 <script type="text/javascript">
 function pcmd(cmd){
 	$('input[name=cmd]').val(cmd);
-	$('#cmdform').submit();
+	$('#form').submit();
 	return false;
 }
 </script>
@@ -32,9 +31,9 @@ function pcmd(cmd){
 			<div class="info">{{photo.info|safe}}</div>
 			<div class="tags">
 				{% for tag in photo.tags.all %}
-					{{tag.name}}{% if not forloop.last %},{% endif %}
+					<span>{{tag.name}}</span>{% if not forloop.last %},{% endif %}
 				{% empty %}
-					No tags
+					<span>No tags</span>
 				{% endfor %}
 			</div>
 		</td>
@@ -42,9 +41,8 @@ function pcmd(cmd){
 	</tr>
 	{% endfor %}
 </table>
-	<input type="hidden" name="cmd" value="" />
-	<input type="hidden" name="sel" value="" />
-</form>
+<input type="hidden" name="cmd" value="" />
+<input type="hidden" name="sel" value="" />
 <script type="text/javascript">
 $("div.thumb img").click(function(){
 	var img = $(this).parent();
@@ -74,7 +72,7 @@ $("div.thumb img").click(function(){
 <div class="tags">
 	<h3>Tags</h3>
 	{% for tag in alltags %}
-	<a href="/filter?tags">{{tag.name}}</a><br/>
+	<a href="/filter?tags">{{tag.name}} ({{tag.media_set.all|length}})</a><br/>
 	{% endfor %}
 </div>
 {% endblock %}
