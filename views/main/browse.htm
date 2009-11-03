@@ -47,14 +47,14 @@ function pcmd(cmd){
 </form>
 <script type="text/javascript">
 $("div.thumb img").click(function(){
-	var img = $(this);
+	var img = $(this).parent();
 	var id = img.attr('id');
 	var sel = $('input[name=sel]');
 	if (img.hasClass('selected')) {
-		img.parent().removeClass('selected');
+		img.removeClass('selected');
 		sel.val(sel.val().replace(',' + id, ''));
 	} else {
-		img.parent().addClass('selected');
+		img.addClass('selected');
 		sel.val(sel.val() + ',' + id);
 	}
 	var act = $('#actions');
