@@ -42,16 +42,26 @@ def browse(req):
 		else:
 			ftag = None
 
-	# If the 'all' parameter is sent then filtering is removed
-	if 'all' in req.GET and 'ftag' in req.session:
-		ftag = None
-		del req.session['ftag']
-
 	# Get the page number
 	try:
 		pagenr = int(req.GET['p'])
+		req.session['pagenr'] = pagenr
 	except:
+		if 'pagenr' in req.session:
+			pagenr = req.session['pagenr']
+		else:
+			pagenr = 1
+
+	# If the 'all' parameter is sent then filtering is removed
+	if 'all' in req.GET :
+		ftag = None
+		if 'ftag' in req.session:
+			del req.session['ftag']
+
 		pagenr = 1
+		if 'pagenr' in req.session:
+			del req.session['pagenr']
+
 	# Set the queryset
 	if ftag:
 		qs = Media.objects.filter(tags__name=ftag)
@@ -67,7 +77,7 @@ def browse(req):
 	paginator = Paginator(qs, COLS*ROWS)
 	try:
 		page = paginator.page(pagenr)
-	except (EmptyPage, InvalidPage):
+	except:
 		page = paginator.page(1)
 		pagenr = 1
 	data = [page.object_list[i*COLS:i*COLS+COLS] for i in xrange(ROWS)]
