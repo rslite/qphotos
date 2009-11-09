@@ -72,7 +72,7 @@ $("div.thumb img").click(function(){
 <div class="tags">
 	<h3>Tags</h3>
 	{% for tag in alltags %}
-	<a href="/filter?tags">{{tag.name}} ({{tag.media_set.all|length}})</a><br/>
+	<a href="/browse?tag={{tag.name}}">{{tag.name}} ({{tag.media_set.all|length}})</a><br/>
 	{% endfor %}
 </div>
 {% endblock %}

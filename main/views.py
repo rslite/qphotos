@@ -32,19 +32,39 @@ def qimport(req):
 	return HttpResponse(import_iter())
 
 def browse(req):
+	# Get a tag for filtering
+	try:
+		ftag = req.GET['tag']
+		req.session['ftag'] = ftag
+	except:
+		if 'ftag' in req.session:
+			ftag = req.session['ftag']
+		else:
+			ftag = None
+
+	# If the 'all' parameter is sent then filtering is removed
+	if 'all' in req.GET and 'ftag' in req.session:
+		ftag = None
+		del req.session['ftag']
+
 	# Get the page number
 	try:
 		pagenr = int(req.GET['p'])
 	except:
 		pagenr = 1
+	# Set the queryset
+	if ftag:
+		qs = Media.objects.filter(tags__name=ftag)
+	else:
+		qs = Media.objects.all()
 	# Get the total number of images from DB
-	total_count = Media.objects.aggregate(Count('name'))['name__count']
+	total_count = qs.aggregate(Count('name'))['name__count']
 	# Paginate here and get the correct objects
 	# TODO Get these from settings
 	COLS = 4
 	ROWS = 3
-	# TODO Implement filtering here
-	paginator = Paginator(Media.objects.all(), COLS*ROWS)
+	# TODO Implement ftaging here
+	paginator = Paginator(qs, COLS*ROWS)
 	try:
 		page = paginator.page(pagenr)
 	except (EmptyPage, InvalidPage):
