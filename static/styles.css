@@ -34,6 +34,11 @@ a
 	width: 60px;
 }
 
+.actions a.retag
+{
+	width: 90%;
+}
+
 .tags span
 {
 	color: #44BB88;

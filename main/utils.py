@@ -39,10 +39,17 @@ def rotate_thumbs(queryset, direction):
 	for media in queryset:
 		path = os.path.join(settings.DATA_DIR, '%04d' % media.year,
 				'%02d' % media.month, '%02d' % media.day, media.name)
-		print 'Rotate', path
+
+		dir = 1 if direction == 'rccw' else -1
+		print 'Rotate', path, dir
+
 		im = Image.open(path)
-		im = im.transpose(Image.ROTATE_90 if direction == 'rccw' else Image.ROTATE_270)
+		im = im.transpose(Image.ROTATE_90 if dir == 1 else Image.ROTATE_270)
 		im.save(path)
+		# Save the rotation applied to the media record
+		# (so that we can display the original rotated too)
+		media.rotation = (media.rotation + dir) % 4
+		media.save()
 
 def get_session_param(req, name, default=None):
 	"""

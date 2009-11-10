@@ -8,6 +8,10 @@ function pcmd(cmd){
 	$('#form').submit();
 	return false;
 }
+function pcmd_lasttag(tag){
+	$('input[name=tags]').val(tag);
+	return pcmd('tag');
+}
 </script>
 <div>
 	Total photos: {{total_count}}. 
@@ -26,7 +30,7 @@ function pcmd(cmd){
 		<td align="center">
 			<div id="dv_{{photo.id}}" class="thumb">
 				<div class="name"><a href="/slide?id={{photo.id}}" target="_blank">{{photo.name|safe}}</a></div>
-				<img src='data/{{ photo.year }}/{{ photo.month|stringformat:"02d" }}/{{ photo.day|stringformat:"02d" }}/{{ photo.name }}' />
+				<img src='{{ photo.thumb_url }}' />
 			</div>
 			<div class="date">{{photo.date}}</div>
 			<div class="info">{{photo.info|safe}}</div>
@@ -68,7 +72,12 @@ $("div.thumb img").click(function(){
 {% block sidebar %}
 <div id="actions" class="actions" style="display:none">
 	<div><a id='del' href='#' onclick="return pcmd('del');">Delete</a></div>
-	<div><input type='text' name='tags' /><a id='tag' href='#' onclick="return pcmd('tag');">Tag</a></div>
+	<div>
+		<input type='text' name='tags' /><a id='tag' href='#' onclick="return pcmd('tag');">Tag</a><br/>
+		{% for lt in last_tags %}
+			<a href='#' class="retag" onclick="return pcmd_lasttag('{{ lt }}');">Tag with '{{ lt }}'</a><br/>
+		{% endfor %}
+	</div>
 	<div>
 		<a id='rcw' href='#' onclick="return pcmd('rcw');">CW</a>
 		<a id='rccw' href='#' onclick="return pcmd('rccw');">CCW</a>

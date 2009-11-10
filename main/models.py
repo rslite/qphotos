@@ -33,14 +33,18 @@ class Media(models.Model):
 	name = models.CharField(max_length=200)
 	# Original folder of file
 	path = models.CharField(max_length=500)
+	# Thumb URL
+	thumb_url = models.CharField(max_length=500, default='')
 	# Date
-	date = models.DateField()
+	date = models.DateTimeField()
 	# Date is separated in fields for easier search
 	year = models.IntegerField()
 	month = models.IntegerField()
 	day = models.IntegerField()
 	# Info (from EXIF or other sources)
 	info = models.CharField(max_length=1000)
+	# Rotation information (0 - no rotation, 1 - CCW, 2 - flip, 3 - CW)
+	rotation = models.IntegerField(default=0)
 
 	# Location from which the file was read
 	location = models.ForeignKey(Location)

@@ -88,6 +88,9 @@ def browse(req):
 	# Get the timeline for the current selection
 	timeline, back_timeline = get_timeline(qs)
 
+	# Get the last tags
+	last_tags = req.session.get('last_tags', [])
+
 	# The form will be redirected to command
 	form_action = "/command"
 
@@ -115,6 +118,18 @@ def command(req):
 	elif cmd == 'tag':
 		tags = req.POST['tags']
 		if tags:
+			# Save the last entered tag
+			try:
+				last_tags = req.session['last_tags']
+			except:
+				last_tags = req.session['last_tags'] = []
+			# Remove if already in list (to keep the MRU at end)
+			if tags in last_tags:
+				last_tags.remove(tags)
+			# Add the tag and save back in session
+			last_tags.append(tags)
+			req.session['last_tags'] = last_tags
+			# Apply the tag
 			tag_media(sel, tags.split(' '))
 	elif cmd == 'rcw' or cmd == 'rccw':
 		qs = Media.objects.filter(pk__in = sel)
@@ -156,6 +171,11 @@ def getfile(req):
 		size = (800, 600)
 		im = Image.open(fobj.path)
 		im.thumbnail(size, Image.ANTIALIAS)
+		# Check the orientation
+		if fobj.rotation == 1:
+			im = im.transpose(Image.ROTATE_90)
+		elif fobj.rotation == 3:
+			im = im.transpose(Image.ROTATE_270)
 		response = HttpResponse(content_type='image/jpeg')
 		im.save(response, 'JPEG')
 	response['Content-Length'] = os.path.getsize(fobj.path)

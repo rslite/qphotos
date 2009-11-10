@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import datetime
 from django.conf import settings
 from qphotos.main.models import *
 import Image, os
@@ -63,9 +63,9 @@ def get_thumb_info(fname):
 				exif_info.append(p % fix_exif_val(tags[k].printable))
 		if 'EXIF DateTimeOriginal' in tags:
 			# Date format is 2008:06:01 14:57:43
-			parts = tags['EXIF DateTimeOriginal'].values.split(' ')[0].split(':')
-			dir = os.sep.join(parts)
-			pdate = date(*map(int, parts))
+			parts = tags['EXIF DateTimeOriginal'].values.replace(' ', ':').split(':')
+			dir = os.sep.join(parts[:3])
+			pdate = datetime(*map(int, parts))
 	
 	if not dir:
 		# Check parent folder
@@ -74,7 +74,7 @@ def get_thumb_info(fname):
 	if not dir:
 		# Check file creation date (ze lamest of them all)
 		dir = '2000/01/01'
-		pdate = date(2000, 1, 1)
+		pdate = datetime(2000, 1, 1, 0, 0, 0)
 
 	return (os.path.join(dir, os.path.basename(fname)), ''.join(exif_info), pdate)
 
@@ -107,6 +107,7 @@ def create_thumbnail(fname):
 		m.year = pdate.year
 		m.month = pdate.month
 		m.day = pdate.day
+		m.thumb_url = os.path.join('data', '%04d' % m.year, '%02d' % m.month, '%02d' % m.day, m.name)
 		m.info = thumbinfo
 		m.location = get_location(fname)
 		m.save()
