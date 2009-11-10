@@ -7,7 +7,7 @@ from django.shortcuts import render_to_response
 from django.template import Context, loader
 from qphotos.main.models import Media, Location, Tag
 from qphotos.main.qimport import import_location
-from qphotos.main.utils import get_session_param, tag_media
+from qphotos.main.utils import *
 import Image, os
 
 def index(req):
@@ -37,27 +37,38 @@ def browse(req):
 	"""
 	# Get a tag for filtering
 	ftag = get_session_param(req, 'tag')
-
 	# Get the page number
 	pagenr = get_session_param(req, 'p', 1)
+	# Get the timeline
+	ftl = get_session_param(req, 'tl')
+
+	print 'ftag:', ftag
+	print 'pagenr:', pagenr
+	print 'ftl:', ftl
 
 	# If the 'all' parameter is sent then filtering is removed
 	if 'all' in req.GET :
-		ftag = None
-		if 'ftag' in req.session:
-			del req.session['ftag']
-
-		pagenr = 1
-		if 'pagenr' in req.session:
-			del req.session['pagenr']
+		print 'RESET'
+		ftag = del_session_param(req, 'tag')
+		pagenr = del_session_param(req, 'p', 1)
+		ftl = del_session_param(req, 'tl')
 
 	# Set the queryset
 	if ftag:
 		qs = Media.objects.filter(tags__name=ftag)
 	else:
 		qs = Media.objects.all()
+
+	# Add the timeline filtering
+	if ftl and ftl.lower() != 'all':
+		parts = map(int, ftl.split('.'))
+		if len(parts) > 0: qs = qs.filter(year=parts[0])
+		if len(parts) > 1: qs = qs.filter(month=parts[1])
+		if len(parts) > 2: qs = qs.filter(day=parts[2])
+
 	# Get the total number of images from DB
 	total_count = qs.aggregate(Count('name'))['name__count']
+
 	# Paginate here and get the correct objects
 	# TODO Get these from settings
 	COLS = 4
@@ -73,6 +84,9 @@ def browse(req):
 
 	# Get tags
 	alltags = Tag.objects.all()
+
+	# Get the timeline for the current selection
+	timeline, back_timeline = get_timeline(qs)
 
 	# The form will be redirected to command
 	form_action = "/command"
@@ -102,6 +116,9 @@ def command(req):
 		tags = req.POST['tags']
 		if tags:
 			tag_media(sel, tags.split(' '))
+	elif cmd == 'rcw' or cmd == 'rccw':
+		qs = Media.objects.filter(pk__in = sel)
+		rotate_thumbs(qs, cmd)
 	else:
 		return HttpRequestNotFound()
 

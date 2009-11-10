@@ -28,6 +28,7 @@ function pcmd(cmd){
 				<div class="name"><a href="/slide?id={{photo.id}}" target="_blank">{{photo.name|safe}}</a></div>
 				<img src='data/{{ photo.year }}/{{ photo.month|stringformat:"02d" }}/{{ photo.day|stringformat:"02d" }}/{{ photo.name }}' />
 			</div>
+			<div class="date">{{photo.date}}</div>
 			<div class="info">{{photo.info|safe}}</div>
 			<div class="tags">
 				{% for tag in photo.tags.all %}
@@ -68,11 +69,24 @@ $("div.thumb img").click(function(){
 <div id="actions" class="actions" style="display:none">
 	<div><a id='del' href='#' onclick="return pcmd('del');">Delete</a></div>
 	<div><input type='text' name='tags' /><a id='tag' href='#' onclick="return pcmd('tag');">Tag</a></div>
+	<div>
+		<a id='rcw' href='#' onclick="return pcmd('rcw');">CW</a>
+		<a id='rccw' href='#' onclick="return pcmd('rccw');">CCW</a>
+	</div>
 </div>
 <div class="tags">
 	<h3>Tags</h3>
 	{% for tag in alltags %}
-	<a href="/browse?tag={{tag.name}}">{{tag.name}} ({{tag.media_set.all|length}})</a><br/>
+		<a href="/browse?tag={{tag.name}}">{{tag.name}} ({{tag.media_set.all|length}})</a><br/>
+	{% endfor %}
+</div>
+<div class="timeline">
+	<h3>Timeline</h3>
+	{% for btl in back_timeline %}
+		<a href="/browse?tl={{btl}}">{{btl}}</a><br/>
+	{% endfor %}
+	{% for tl in timeline %}
+		<a href="/browse?tl={{tl.0}}">{{tl.0}} ({{tl.1}})</a><br/>
 	{% endfor %}
 </div>
 {% endblock %}
