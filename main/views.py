@@ -7,7 +7,7 @@ from django.shortcuts import render_to_response
 from django.template import Context, loader
 from qphotos.main.models import Media, Location, Tag
 from qphotos.main.qimport import import_location
-from qphotos.main.utils import tag_media
+from qphotos.main.utils import get_session_param, tag_media
 import Image, os
 
 def index(req):
@@ -32,25 +32,14 @@ def qimport(req):
 	return HttpResponse(import_iter())
 
 def browse(req):
+	"""
+	Browse the photos (with filtering if needed)
+	"""
 	# Get a tag for filtering
-	try:
-		ftag = req.GET['tag']
-		req.session['ftag'] = ftag
-	except:
-		if 'ftag' in req.session:
-			ftag = req.session['ftag']
-		else:
-			ftag = None
+	ftag = get_session_param(req, 'tag')
 
 	# Get the page number
-	try:
-		pagenr = int(req.GET['p'])
-		req.session['pagenr'] = pagenr
-	except:
-		if 'pagenr' in req.session:
-			pagenr = req.session['pagenr']
-		else:
-			pagenr = 1
+	pagenr = get_session_param(req, 'p', 1)
 
 	# If the 'all' parameter is sent then filtering is removed
 	if 'all' in req.GET :

@@ -28,3 +28,18 @@ def tag_media(sel, tags):
 		if dirty:
 			print '...saved'
 			media.save()
+
+def get_session_param(req, name, default=None):
+	"""
+	Get a value from GET and if not found from session.
+	If not found in session returns the default value
+	"""
+	try:
+		val = req.GET[name]
+		req.session[name] = val
+	except:
+		if name in req.session:
+			val = req.session[name]
+		else:
+			val = default
+	return val
