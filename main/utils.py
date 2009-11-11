@@ -89,6 +89,8 @@ def get_timeline(queryset):
 	# Try by year
 	res = queryset.values('year').annotate(Count('year')).order_by()
 	back = ['All',]
+	if not res:
+		return [], back
 	if len(res) > 1:
 		res = [(k['year'], k['year__count']) for k in res]
 		return res, back
@@ -97,6 +99,8 @@ def get_timeline(queryset):
 	year = res[0]['year']
 	res = queryset.values('month').annotate(Count('month')).order_by()
 	back.append('%04d' % (year))
+	if not res:
+		return [], back
 	if not res: return None
 	if len(res) > 1:
 		res = [('%04d.%02d' % (year, k['month']), k['month__count']) for k in res]
